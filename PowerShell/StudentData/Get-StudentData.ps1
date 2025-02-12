@@ -1,9 +1,50 @@
 <#
+.SYNOPSIS
+    This script is used to extract student data from a bio file.
 
-    .SYNOPSIS
-    
 
 #>
+param (
+    [parameter(Mandatory)]
+    [string]
+    $BioFilePath
+)
+
+$BioData = Get-Content -Path $BioFilePath -Raw
+
+
+
+# search for and return the name of the student from the paper
+# assumes student name is the first non-empty line in the file
+Get-StudentName ( [string] $BioData ) {
+    $Name = ($BioData -split "`n") | Where-Object { $_ -ne "" -and $_ -ne $null } | Select-Object -First 1
+    if( $name -match "name" ) { $Name = ($Name -replace "name:", "").trim() }
+    return $Name
+}
+
+# search for and return the name of the teacher from the paper
+# if no name detected/returned, return an empty string
+Get-TeacherName ( [string] $BioData ) {
+    $teacher = ($BioData -split "`n")[0..2] | Select-String -Pattern "mr|mrs|ms|miss|mister" -Raw | Select-Object -First 1
+    if( $teacher -eq $null ) { $teacher = "" } else { $teacher = $teacher.trim() }
+    return $teacher
+}
+
+
+# Pull the student's favorite color from the bio file
+# looks for values that match the 'colors' array
+Get-FavoriteColor ( [string] $BioData ) {
+    $colors = @("red", "magenta", "navy blue", "orange", "yellow", "green", "blue", "purple", "pink", "brown", "black", "white", "gray", "grey")
+    $fav_color_line = $bioData.split('.') | Where-Object { $_ -match "my favorite color is" -or $_ -match "is my favorite color" }
+    $fav_color      = (($fav_color_line.trim().Split(" ") | Where-Object { $_ -in $colors }) -join " ").trim()
+    return $fav_color
+}
+
+
+
+
+
+#### 
 
 param(
     [Parameter(Mandatory)]
