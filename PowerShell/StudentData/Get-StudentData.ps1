@@ -11,7 +11,7 @@ param (
     $FilePath
 )
 
-Import-Module .\StudentData_modules.psm1
+Import-Module .\StudentData_modules.psm1 -Force
 
 # Verify path is legit
 try { 
@@ -33,10 +33,13 @@ elseif( $file.Extension -notmatch "txt" ) {
     break
 }
 
-Get-StudentName -BioData $bioData
+$outputs = [psobject]@{
+    "Student"    = Get-StudentName -BioData $bioData
+    "Teacher"    = Get-TeacherName -BioData $bioData
+    "Birthday"   = Get-Birthday -BioData $bioData
+    "Grade"      = Get-Grade -BioData $bioData
+    "Color"      = Get-FavoriteColor -BioData $bioData
+    "Sport"      = Get-FavoriteSport -BioData $bioData
+}
 
-Get-TeacherName -BioData $bioData
-
-Get-FavoriteColor -BioData $bioData
-
-Get-Birthday -BioData $bioData
+$outputs

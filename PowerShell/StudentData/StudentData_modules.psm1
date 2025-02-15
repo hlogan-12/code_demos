@@ -4,7 +4,7 @@ function Get-StudentName ( [string] $BioData ) {
 
     # Get first line of the bio, assume it's the kid's name
     $Name = ($BioData -split "[\n.]") | Select-Object -First 1
-    return $Name
+    return $Name.trim()
 }
 
 # search for and return the name of the teacher from the paper
@@ -35,7 +35,6 @@ function Get-FavoriteColor ( [string] $BioData ) {
     return $fav_color
 }
 
-
 # Find the section of the bio that contains the student's birthday
 # then extract and format the date
 function Get-Birthday( [string]$BioData ) {
@@ -64,4 +63,31 @@ function Get-Birthday( [string]$BioData ) {
     }
 
     return $date
+}
+
+# Find the section of the bio that contains the student's favorite sport
+function Get-FavoriteSport ( [string]$BioData ) {
+    # Define the regex pattern for the date (MMM d or MMMM d)
+    $sportsFilter = "\w+.?ball|soccer|ping.?pong|tennis|hockey|wrestling"
+
+    # Get the line that most likely states the student's bday
+    $favSport = (($BioData -split "[\n\r.]").trim() |
+                    Where-Object { $_ -match "favorite|sport|is" } |
+                    Select-String -Pattern $sportsFilter).Matches.Value
+
+    return $favSport
+}
+
+# Find the section of the bio that contains the student's grade
+function Get-Grade ( [string]$BioData ) {
+
+    # Define the regex pattern
+    $gradeFilter = "(?<= grade).*\d{1,2}|\d{1,2}(?=.*(st|nd|rd|th).*grade)"
+
+    # Get the line that most likely states the grade
+    $grade = (($BioData -split "[\n\r.]").trim() |
+                    Where-Object { $_ -match "grade|in" } |
+                    Select-String -Pattern $gradeFilter).Matches.Value
+
+    return $grade
 }
