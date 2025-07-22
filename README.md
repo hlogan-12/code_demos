@@ -1,2 +1,2 @@
-# code_demos
-code demonstrations for various audiences
+# Code Demos
+Small, simple code demonstations to inspire the youths (career day).
