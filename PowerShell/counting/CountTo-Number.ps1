@@ -8,7 +8,7 @@ Key Ideas:
     >> Over 1 million lines of code
 
 - How can computers process so many lines so quickly?
-    >> VERY fast...
+    >> VERY fast... speed of light
 
 #>
 
